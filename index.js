@@ -11,10 +11,11 @@ ds18b20.temperature('28-3c01f096bcde', (err, value) => {
   console.log('Current temperature is', temp);
 });
 
-sensor.read(22, 5, (err, temp, humid) => {
+sensor.read(22, 5, (err, tempReading, humid) => {
+	const temp = (tempReading * (9/5)) + 32;
 	if(!err) {
-	console.log(`temp: ${temp}, humidity: ${humid}`);
+		console.log(`temp: ${temp}, humidity: ${humid}`);
 	} else {
-	console.log(err);
+		console.log(err);
 	}
 });
