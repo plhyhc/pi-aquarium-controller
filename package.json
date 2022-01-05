@@ -1,0 +1,31 @@
+{
+  "name": "pi-aquarium-controller",
+  "version": "1.0.0",
+  "description": "Aquarium Controller for Raspberry Pi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plhyhc/pi-aquarium-controller.git"
+  },
+  "keywords": [
+    "reef",
+    "controller",
+    "aquarium",
+    "controller",
+    "aquarium",
+    "pump"
+  ],
+  "author": "Josh Kraft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plhyhc/pi-aquarium-controller/issues"
+  },
+  "homepage": "https://github.com/plhyhc/pi-aquarium-controller#readme",
+  "dependencies": {
+    "ds18b20": "^0.1.0",
+    "node-dht-sensor": "^0.4.3"
+  }
+}
