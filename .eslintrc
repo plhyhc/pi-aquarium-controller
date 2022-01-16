@@ -1,0 +1,26 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "no-console": 1,
+        "semi": 0,
+        "space-before-function-paren": 0,
+        "no-this-alias": 0
+    },
+    "overrides": [
+      {
+        "files": ["*.js","*.spec.js"],
+        "rules": {
+          "no-unused-expressions": "off"
+        }
+      }
+    ]
+  }

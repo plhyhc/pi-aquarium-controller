@@ -1,0 +1,11 @@
+{
+    "dht": {
+        "type": 22,
+        "gpioPin": 5
+    },
+    "mysql": {
+        "database": "aquarium",
+        "username": "pac",
+        "password": "<tbd>"
+    }
+}

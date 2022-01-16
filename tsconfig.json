@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "declaration": true,
+      "removeComments": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "target": "es2020",
+      "sourceMap": true,
+      "outDir": "./dist",
+      "baseUrl": "./",
+      "incremental": true,
+      "resolveJsonModule": true,
+      "watch": false
+    },
+    "types": [ "node", "mocha", "chai" ],
+    "lib": ["es2020", "es2017", "es7", "es6", "dom"],
+    "include": [ "src/**/*" ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "site"
+    ]
+  }
