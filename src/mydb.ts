@@ -1,7 +1,8 @@
 import * as config from "./config.json";
 import * as mysql from 'mysql';
+import { IMydb } from "./interfaces/IMydb";
 
-class Mydb {
+class Mydb implements IMydb {
     myCon: mysql.Pool;
     constructor() {
         this.myCon = mysql.createPool({

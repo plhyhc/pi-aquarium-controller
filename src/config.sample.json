@@ -7,5 +7,11 @@
         "database": "aquarium",
         "username": "<username>",
         "password": "<password>"
+    },
+    "waterTemperature": {
+        "0": {
+            "id": "<your-1-wire-id-here>"
+        },
+        "description": "DS18B20 water temperature sensor module. The ID is the 1-wire id."
     }
 }
