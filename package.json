@@ -29,5 +29,8 @@
     "ds18b20": "^0.1.0",
     "mysql": "^2.18.1",
     "node-dht-sensor": "^0.4.3"
+  },
+  "devDependencies": {
+    "typescript": "4.5.4"
   }
 }
