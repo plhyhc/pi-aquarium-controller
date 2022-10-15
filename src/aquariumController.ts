@@ -7,39 +7,47 @@ import { ILogTemperature } from "./interfaces/ILogTempe3rature";
 
 
 export default class AquariumController {
-    mongodb: Mongoose;
     logTemp: any;
+    mongoose: Mongoose;
     constructor() {
-        this.mongodb = new Mongoose();
-        this.mongodb.connect(config.mongo.url);
+        this.mongoose = new Mongoose();
 
-        const logTempSchema = new Schema<ILogTemperature>({
+        this.mongoose.connect(config.mongo.url);
+
+        this.logTemp = this.mongoose.model<ILogTemperature>('temperature', new Schema({
             device_id: { type: String, required: true },
             log_time: { type: Date, required: true },
             temperature: Number
-          });
-          
-          // 3. Create a Model.
-          this.logTemp = model<ILogTemperature>('User', logTempSchema);
-
+          }));
         // ds18b20.sensors((err, ids) => {
         //     console.log([err, ids]);
         //   });
-        const waterTempSensorId = config.waterTemperature[0].id;
         setTimeout(() => {
-            this.fetchWaterSensorTemp(waterTempSensorId).then((waterTemp: number) => {
-                console.log('water temp: ', waterTemp);
-                this.logWaterTemperature(waterTempSensorId, waterTemp);
-            }).catch((error: any) => {
-                console.error(error);
-            });
+            this.runProcess();
         }, 5000);
+
+       
+    }
+
+    runProcess(): void {
+        const waterTempSensorId = config.waterTemperature[0].id;
+        
+        this.fetchWaterSensorTemp(waterTempSensorId).then((waterTemp: number) => {
+            console.log('water temp: ', waterTemp);
+            this.logWaterTemperature(waterTempSensorId, waterTemp);
+        }).catch((error: any) => {
+            console.error(error);
+        });
 
         this.fetchAirTempHumidity().then((dht: IDht) => {
             console.log(`air temp: ${dht.temperature}, humidity: ${dht.humidity}`);
         }).catch((error: any) => {
             console.error(error);
         });
+        setTimeout(() => {
+            this.runProcess();
+        }, 5000);
+
     }
 
     fetchWaterSensorTemp(id: string): Promise<number> {
@@ -80,6 +88,7 @@ export default class AquariumController {
     }
 
     async logWaterTemperature(id: string, temperature: number): Promise<void> {
+        
         const logItem = new this.logTemp({
             device_id: id,
             log_time: new Date(),

@@ -31,6 +31,6 @@
     "node-dht-sensor": "^0.4.3"
   },
   "devDependencies": {
-    "typescript": "4.5.4"
+    "typescript": "^4.8.4"
   }
 }
