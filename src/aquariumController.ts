@@ -1,23 +1,39 @@
 import * as config from "./config.json";
 import sensor = require('node-dht-sensor');
 import ds18b20 = require('ds18b20');
-import Mydb from './mydb';
 import { IDht } from "./interfaces/IDht";
+import { Mongoose, Schema, model } from "mongoose";
+import { ILogTemperature } from "./interfaces/ILogTempe3rature";
 
 
 export default class AquariumController {
-    mydb: Mydb;
+    mongodb: Mongoose;
+    logTemp: any;
     constructor() {
-        this.mydb = new Mydb();
+        this.mongodb = new Mongoose();
+        this.mongodb.connect(config.mongo.url);
+
+        const logTempSchema = new Schema<ILogTemperature>({
+            device_id: { type: String, required: true },
+            log_time: { type: Date, required: true },
+            temperature: Number
+          });
+          
+          // 3. Create a Model.
+          this.logTemp = model<ILogTemperature>('User', logTempSchema);
+
         // ds18b20.sensors((err, ids) => {
         //     console.log([err, ids]);
         //   });
-        
-        this.fetchWaterSensorTemp(config.waterTemperature[0].id).then((waterTemp: number) => {
-            console.log('water temp: ', waterTemp)
-        }).catch((error: any) => {
-            console.error(error);
-        });
+        const waterTempSensorId = config.waterTemperature[0].id;
+        setTimeout(() => {
+            this.fetchWaterSensorTemp(waterTempSensorId).then((waterTemp: number) => {
+                console.log('water temp: ', waterTemp);
+                this.logWaterTemperature(waterTempSensorId, waterTemp);
+            }).catch((error: any) => {
+                console.error(error);
+            });
+        }, 5000);
 
         this.fetchAirTempHumidity().then((dht: IDht) => {
             console.log(`air temp: ${dht.temperature}, humidity: ${dht.humidity}`);
@@ -63,10 +79,14 @@ export default class AquariumController {
         });
     }
 
-    logWaterTemperature(id: string, temperature: number): void {
-        const logDateTime = this.formatDateTime(new Date());
-        const sql: string = `INSERT INTO temperature (device_id, log_time, temperature) VALUES ('${id}', '${logDateTime}', '${temperature}') `;
-        this.mydb.myInsert(sql);
+    async logWaterTemperature(id: string, temperature: number): Promise<void> {
+        const logItem = new this.logTemp({
+            device_id: id,
+            log_time: new Date(),
+            temperature: temperature
+        });
+
+        await logItem.save();
     }
 
     formatDateTime(d: Date): string {

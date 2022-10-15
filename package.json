@@ -27,7 +27,7 @@
   "dependencies": {
     "@types/node": "^17.0.8",
     "ds18b20": "^0.1.0",
-    "mysql": "^2.18.1",
+    "mongoose": "^6.6.5",
     "node-dht-sensor": "^0.4.3"
   },
   "devDependencies": {
