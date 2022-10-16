@@ -17,7 +17,9 @@ export default class AquariumController {
         this.logTemp = this.mongoose.model<ILogTemperature>('temperature', new Schema({
             device_id: { type: String, required: true },
             log_time: { type: Date, required: true },
-            temperature: Number
+            waterTemperature: Number,
+            airTemperature: Number,
+            airHumidity: Number
           }));
         // ds18b20.sensors((err, ids) => {
         //     console.log([err, ids]);
@@ -33,17 +35,19 @@ export default class AquariumController {
         const waterTempSensorId = config.waterTemperature[0].id;
         
         this.fetchWaterSensorTemp(waterTempSensorId).then((waterTemp: number) => {
-            console.log('water temp: ', waterTemp);
-            this.logWaterTemperature(waterTempSensorId, waterTemp);
+            return waterTemp;
+        }).then((waterTemp: number) => {
+            this.fetchAirTempHumidity().then((dht: IDht) => {
+                console.log('water temp: ', waterTemp);
+                console.log(`air temp: ${dht.temperature}, humidity: ${dht.humidity}`);
+                this.logWaterTemperature(waterTempSensorId, waterTemp, dht);
+            }).catch((error: any) => {
+                console.error(error);
+            });
         }).catch((error: any) => {
             console.error(error);
         });
 
-        this.fetchAirTempHumidity().then((dht: IDht) => {
-            console.log(`air temp: ${dht.temperature}, humidity: ${dht.humidity}`);
-        }).catch((error: any) => {
-            console.error(error);
-        });
         setTimeout(() => {
             this.runProcess();
         }, 5000);
@@ -87,12 +91,14 @@ export default class AquariumController {
         });
     }
 
-    async logWaterTemperature(id: string, temperature: number): Promise<void> {
+    async logWaterTemperature(id: string, waterTemperature: number, dht: IDht): Promise<void> {
         
         const logItem = new this.logTemp({
             device_id: id,
             log_time: new Date(),
-            temperature: temperature
+            waterTemperature: waterTemperature,
+            airTemperature: dht.temperature,
+            airHumidity: dht.humidity
         });
 
         await logItem.save();
